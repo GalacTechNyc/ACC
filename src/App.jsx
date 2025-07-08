@@ -1,24 +1,45 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Music, Users, Film, Play, Mail, Search, Menu, X } from 'lucide-react'
+import { Music, Users, Film, Play, Mail, Search, Menu, X, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import ChatBot from './components/ChatBot.jsx'
 import ContactForm from './components/ContactForm.jsx'
+import ServicesSection from './components/ServicesSection.jsx'
+import logo from './assets/logo.png'
 import './App.css'
 
 // Header Component
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+    setIsMenuOpen(false)
+    setIsCatalogOpen(false)
+  }
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      scrollToSection('featured')
+      alert(`Searching for: ${searchQuery}`)
+    }
+  }
 
   return (
     <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <Music className="h-8 w-8 text-primary" />
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => scrollToSection('home')}>
+            <img src={logo} alt="Alliance Collective Compositions" className="h-12 w-12 object-contain" />
             <div>
               <h1 className="text-xl font-bold text-primary">Alliance Collective</h1>
               <p className="text-sm text-muted-foreground">Compositions</p>
@@ -27,33 +48,76 @@ function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#home" className="text-foreground hover:text-primary transition-colors">Home</a>
-            <div className="relative group">
-              <button className="text-foreground hover:text-primary transition-colors flex items-center space-x-1">
+            <button 
+              onClick={() => scrollToSection('home')} 
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              Home
+            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setIsCatalogOpen(!isCatalogOpen)}
+                className="text-foreground hover:text-primary transition-colors flex items-center space-x-1"
+              >
                 <span>Catalog</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                <ChevronDown className={`w-4 h-4 transition-transform ${isCatalogOpen ? 'rotate-180' : ''}`} />
               </button>
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <a href="#drumline" className="block px-4 py-3 text-sm hover:bg-muted transition-colors">Drumline Cadences</a>
-                <a href="#fullband" className="block px-4 py-3 text-sm hover:bg-muted transition-colors">Full Band Scores</a>
-                <a href="#media" className="block px-4 py-3 text-sm hover:bg-muted transition-colors">Media, Gaming & Film</a>
-              </div>
+              {isCatalogOpen && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-border rounded-lg shadow-lg z-50">
+                  <button 
+                    onClick={() => scrollToSection('catalog')} 
+                    className="block w-full text-left px-4 py-3 text-sm hover:bg-muted transition-colors"
+                  >
+                    Drumline Cadences
+                  </button>
+                  <button 
+                    onClick={() => scrollToSection('catalog')} 
+                    className="block w-full text-left px-4 py-3 text-sm hover:bg-muted transition-colors"
+                  >
+                    Full Band Scores
+                  </button>
+                  <button 
+                    onClick={() => scrollToSection('catalog')} 
+                    className="block w-full text-left px-4 py-3 text-sm hover:bg-muted transition-colors"
+                  >
+                    Media, Gaming & Film
+                  </button>
+                </div>
+              )}
             </div>
-            <a href="#about" className="text-foreground hover:text-primary transition-colors">About</a>
-            <a href="#services" className="text-foreground hover:text-primary transition-colors">Services</a>
-            <a href="#contact" className="text-foreground hover:text-primary transition-colors">Contact</a>
+            <button 
+              onClick={() => scrollToSection('about')} 
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              About
+            </button>
+            <button 
+              onClick={() => scrollToSection('services')} 
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              Services
+            </button>
+            <button 
+              onClick={() => scrollToSection('contact')} 
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              Contact
+            </button>
           </nav>
 
           {/* Search and Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-2">
-              <Input placeholder="Search arrangements..." className="w-64" />
-              <Button size="sm" variant="outline">
+            <form onSubmit={handleSearch} className="hidden md:flex items-center space-x-2">
+              <Input 
+                placeholder="Search arrangements..." 
+                className="w-64" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button type="submit" size="sm" variant="outline">
                 <Search className="h-4 w-4" />
               </Button>
-            </div>
+            </form>
             <Button
               variant="outline"
               size="sm"
@@ -69,19 +133,24 @@ function Header() {
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pb-4 border-t border-border pt-4">
             <div className="flex flex-col space-y-4">
-              <a href="#home" className="text-foreground hover:text-primary transition-colors">Home</a>
-              <a href="#drumline" className="text-foreground hover:text-primary transition-colors">Drumline Cadences</a>
-              <a href="#fullband" className="text-foreground hover:text-primary transition-colors">Full Band Scores</a>
-              <a href="#media" className="text-foreground hover:text-primary transition-colors">Media, Gaming & Film</a>
-              <a href="#about" className="text-foreground hover:text-primary transition-colors">About</a>
-              <a href="#services" className="text-foreground hover:text-primary transition-colors">Services</a>
-              <a href="#contact" className="text-foreground hover:text-primary transition-colors">Contact</a>
-              <div className="flex items-center space-x-2 pt-2">
-                <Input placeholder="Search..." className="flex-1" />
-                <Button size="sm" variant="outline">
+              <button onClick={() => scrollToSection('home')} className="text-left text-foreground hover:text-primary transition-colors">Home</button>
+              <button onClick={() => scrollToSection('catalog')} className="text-left text-foreground hover:text-primary transition-colors">Drumline Cadences</button>
+              <button onClick={() => scrollToSection('catalog')} className="text-left text-foreground hover:text-primary transition-colors">Full Band Scores</button>
+              <button onClick={() => scrollToSection('catalog')} className="text-left text-foreground hover:text-primary transition-colors">Media, Gaming & Film</button>
+              <button onClick={() => scrollToSection('about')} className="text-left text-foreground hover:text-primary transition-colors">About</button>
+              <button onClick={() => scrollToSection('services')} className="text-left text-foreground hover:text-primary transition-colors">Services</button>
+              <button onClick={() => scrollToSection('contact')} className="text-left text-foreground hover:text-primary transition-colors">Contact</button>
+              <form onSubmit={handleSearch} className="flex items-center space-x-2 pt-2">
+                <Input 
+                  placeholder="Search..." 
+                  className="flex-1" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Button type="submit" size="sm" variant="outline">
                   <Search className="h-4 w-4" />
                 </Button>
-              </div>
+              </form>
             </div>
           </nav>
         )}
@@ -92,6 +161,13 @@ function Header() {
 
 // Hero Section Component
 function HeroSection() {
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <section id="home" className="gradient-hero text-white py-20">
       <div className="container mx-auto px-4 text-center">
@@ -103,10 +179,19 @@ function HeroSection() {
           From drumline cadences to full orchestral scores.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="btn-accent">
+          <Button 
+            size="lg" 
+            className="btn-accent"
+            onClick={() => scrollToSection('catalog')}
+          >
             Browse Catalog
           </Button>
-          <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-primary">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="text-white border-white hover:bg-white hover:text-primary"
+            onClick={() => scrollToSection('services')}
+          >
             Custom Arrangements
           </Button>
         </div>
@@ -117,6 +202,13 @@ function HeroSection() {
 
 // Category Cards Component
 function CategoryCards() {
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   const categories = [
     {
       title: "Drumline Cadences",
@@ -139,7 +231,7 @@ function CategoryCards() {
   ]
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section id="catalog" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Our Catalog</h2>
@@ -162,7 +254,10 @@ function CategoryCards() {
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-sm font-semibold text-primary mb-4">{category.count}</p>
-                <Button className="w-full btn-primary">
+                <Button 
+                  className="w-full btn-primary"
+                  onClick={() => scrollToSection('featured')}
+                >
                   <Play className="h-4 w-4 mr-2" />
                   Browse Collection
                 </Button>
@@ -177,6 +272,17 @@ function CategoryCards() {
 
 // Featured Arrangements Component
 function FeaturedArrangements() {
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const handlePreview = (title) => {
+    alert(`Playing preview for: ${title}`)
+  }
+
   const arrangements = [
     {
       title: "Thunder Strike Cadence",
@@ -205,7 +311,7 @@ function FeaturedArrangements() {
   ]
 
   return (
-    <section className="py-20">
+    <section id="featured" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Featured Arrangements</h2>
@@ -238,11 +344,20 @@ function FeaturedArrangements() {
                   <span>Level: {arrangement.difficulty}</span>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" className="flex-1 btn-primary">
+                  <Button 
+                    size="sm" 
+                    className="flex-1 btn-primary"
+                    onClick={() => handlePreview(arrangement.title)}
+                  >
                     <Play className="h-4 w-4 mr-2" />
                     Preview
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => scrollToSection('contact')}
+                  >
                     <Mail className="h-4 w-4 mr-2" />
                     Inquire
                   </Button>
@@ -365,6 +480,7 @@ function App() {
         <CategoryCards />
         <FeaturedArrangements />
         <AboutSection />
+        <ServicesSection />
         <ContactSection />
       </main>
       <Footer />

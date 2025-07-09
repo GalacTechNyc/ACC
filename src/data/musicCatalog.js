@@ -17,8 +17,10 @@ export const getUploadedMusic = () => {
   return savedItems ? JSON.parse(savedItems) : []
 }
 
-// Combined catalog for search and filtering - now uses uploaded music
-export const allMusic = getUploadedMusic();
+// Function to get all music dynamically (replaces static allMusic)
+export const getAllMusic = () => {
+  return getUploadedMusic()
+}
 
 // Category mappings - will be populated dynamically from uploaded music
 export const categories = {
@@ -53,7 +55,7 @@ export default {
   mediaAndFilm,
   warmups,
   beats,
-  allMusic,
+  getAllMusic,
   categories,
   difficultyLevels,
   priceRanges,

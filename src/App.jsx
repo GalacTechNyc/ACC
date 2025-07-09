@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Menu, X, Search, Music, Users, Film, Phone, Mail, MapPin, Clock, Settings } from 'lucide-react'
 import ChatBot from './components/ChatBot.jsx'
 import ContactForm from './components/ContactForm.jsx'
@@ -14,7 +14,26 @@ function Header({ onAdminClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const dropdownRef = useRef(null)
 
+  // Handle click outside for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isDropdownOpen])
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
     if (element) {
@@ -34,15 +53,15 @@ function Header({ onAdminClick }) {
   }
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="header-enhanced bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
+          <div className="flex items-center cursor-pointer float-animation" onClick={() => scrollToSection('home')}>
             <img src={logo} alt="Alliance Collective Compositions" className="h-12 w-12 mr-3" />
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Alliance Collective</h1>
-              <p className="text-sm text-gray-600">Compositions</p>
+              <h1 className="text-xl font-bold text-vibrant-purple">Alliance Collective</h1>
+              <p className="text-sm text-vibrant-blue">Compositions</p>
             </div>
           </div>
 
@@ -55,7 +74,7 @@ function Header({ onAdminClick }) {
               Home
             </button>
             
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center text-gray-700 hover:text-purple-600 transition-colors"
@@ -67,28 +86,40 @@ function Header({ onAdminClick }) {
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <div className="dropdown-enhanced absolute top-full left-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50">
                   <button 
-                    onClick={() => scrollToSection('music-catalog')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      scrollToSection('music-catalog')
+                      setIsDropdownOpen(false)
+                    }}
+                    className="dropdown-item block w-full text-left"
                   >
                     All Music
                   </button>
                   <button 
-                    onClick={() => scrollToSection('music-catalog')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      scrollToSection('music-catalog')
+                      setIsDropdownOpen(false)
+                    }}
+                    className="dropdown-item block w-full text-left"
                   >
                     Drumline Cadences
                   </button>
                   <button 
-                    onClick={() => scrollToSection('music-catalog')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      scrollToSection('music-catalog')
+                      setIsDropdownOpen(false)
+                    }}
+                    className="dropdown-item block w-full text-left"
                   >
                     Full Band Scores
                   </button>
                   <button 
-                    onClick={() => scrollToSection('music-catalog')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      scrollToSection('music-catalog')
+                      setIsDropdownOpen(false)
+                    }}
+                    className="dropdown-item block w-full text-left"
                   >
                     Media & Film
                   </button>

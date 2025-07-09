@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Play, Download, Mail, Search, Filter, Music, Users, Film, Zap, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'

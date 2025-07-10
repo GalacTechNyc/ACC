@@ -314,9 +314,9 @@ function MusicCatalog() {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <div className="bg-gradient-card text-white rounded-lg p-8 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4">Can't Find What You're Looking For?</h3>
-            <p className="text-lg mb-6 opacity-90">
+          <div className="bg-gradient-card text-black rounded-lg p-8 max-w-3xl mx-auto">
+            <h3 className="text-2xl font-bold mb-4 text-black">Can't Find What You're Looking For?</h3>
+            <p className="text-lg mb-6 text-black">
               We offer custom arrangement services for any ensemble, style, or occasion. 
               Let us create something unique for your group.
             </p>
@@ -324,7 +324,7 @@ function MusicCatalog() {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="text-white border-white hover:bg-white hover:text-primary"
+                className="text-black border-black hover:bg-black hover:text-white"
                 onClick={() => scrollToSection('services')}
               >
                 Custom Arrangements
